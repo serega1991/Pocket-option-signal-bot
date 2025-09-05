@@ -1,4 +1,4 @@
 python-telegram-bot==13.15
-requests
-flask
+requests==2.32.3
+Flask==3.0.2
 gunicorn

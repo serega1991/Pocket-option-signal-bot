@@ -7,23 +7,17 @@ from threading import Thread
 
 app = Flask(__name__)
 
-# 🔑 Твої токени та ключі
+# 🔑 Твої токени
 TELEGRAM_TOKEN = "8041021589:AAFuD-HElQI4yehKOJ328-V50XFhk9XQWfQ"
 CHAT_ID = "2066686801"
 API_KEY = "4d43adc405084d9fa68103c42afaaaa7"
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
-# Валютні пари для аналізу
+# Валютні пари
 PAIRS = [
-    "EUR/USD",
-    "CAD/CHF",
-    "USD/JPY",
-    "GBP/USD",
-    "AUD/CHF",
-    "EUR/GBP",
-    "NZD/USD",
-    "USD/CAD"
+    "EUR/USD", "CAD/CHF", "USD/JPY", "GBP/USD",
+    "AUD/CHF", "EUR/GBP", "NZD/USD", "USD/CAD"
 ]
 
 @app.route("/")
@@ -44,21 +38,17 @@ def analyze_and_send():
             last = float(values[0]["close"])
             prev = float(values[1]["close"])
 
-            # Простий аналіз
             if last > prev:
-                signal = "📈 Купувати"
-                probability = 92
+                signal, probability = "📈 Купувати", 92
             elif last < prev:
-                signal = "📉 Продавати"
-                probability = 91
+                signal, probability = "📉 Продавати", 91
             else:
-                signal = "⏸ Очікувати"
-                probability = 50
+                signal, probability = "⏸ Очікувати", 50
 
             if probability >= 90:
                 bot.send_message(
                     chat_id=CHAT_ID,
-                    text=f"🔔 Сигнал по {pair}\n{signal}\nЙмовірність: {probability}%\nРинок: REAL"
+                    text=f"🔔 Сигнал по {pair}\n{signal}\nЙмовірність: {probability}%"
                 )
         except Exception as e:
             print("Error for", pair, e)
@@ -66,7 +56,7 @@ def analyze_and_send():
 def run_loop():
     while True:
         analyze_and_send()
-        time.sleep(300)  # раз у 5 хвилин
+        time.sleep(300)
 
 if __name__ == "__main__":
     t = Thread(target=run_loop)
